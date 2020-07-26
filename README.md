@@ -1,13 +1,13 @@
 ![Logo](nametag.jpg)
 
 # HMNI
-Fuzzy Name Matching with Machine Learning. Perform common fuzzy name matching tasks including similarity scoring, record linkage, deduplication and normalization.
+Fuzzy name matching with machine learning. Perform common fuzzy name matching tasks including similarity scoring, record linkage, deduplication and normalization.
 
-HMNI is trained on a  internationally-transliterated latin firstname dataset, where precision is afforded priority.
+HMNI is trained on an internationally-transliterated Latin firstname dataset, where precision is afforded priority.
 
 |    Model    |  Accuracy | Precision |   Recall  |  F1-Score |
 |-------------|-----------|-----------|-----------|-----------|
-| HMNI-latin  | 0.9379    | 0.9194    | 0.7528    | 0.8278    |
+| HMNI-Latin  | 0.9379    | 0.9194    | 0.7528    | 0.8278    |
 
 ## Requirements
 -  tensorflow V1
@@ -99,7 +99,7 @@ matcher.dedup(names_list, keep='longest', replace=True)
 
 ## Contributing
 Pull requests are welcome. 
-For developers wishing to build a model using Latin or Non-latin writing systems (Chinese, Cyrillic, Arabic), 
+For developers wishing to build a model using Latin or non-Latin writing systems (Chinese, Cyrillic, Arabic), 
 developer notebooks are shared in the `dev` folder to build models using similar methods. 
 
 ## License

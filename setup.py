@@ -8,7 +8,7 @@ setup_args = dict(
     packages=find_packages(),
     author='Christopher Thornton',
     author_email='christopher_thornton@outlook.com',
-    keywords=['Fuzzy', 'Name', 'Matching'],
+    keywords=['natural-language-processing', 'nlp', 'machine-learning', 'data-science', 'python', 'artificial-intelligence', 'ai', 'nlp-library']
     url='https://github.com/Christopher-Thornton/hmni',
     download_url='https://pypi.org/project/hmni/'
 )

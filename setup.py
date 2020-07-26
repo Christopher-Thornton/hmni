@@ -10,7 +10,7 @@ setup_args = dict(
     author_email='christopher_thornton@outlook.com',
     keywords=['natural-language-processing', 'nlp', 'machine-learning', 'data-science', 'python', 'artificial-intelligence', 'ai', 'nlp-library']
     url='https://github.com/Christopher-Thornton/hmni',
-    download_url='https://pypi.org/project/hmni/'
+    download_url='https://github.com/Christopher-Thornton/hmni/archive/v0.1.0.zip'
 )
 
 install_requires = [

@@ -1,4 +1,4 @@
-![Logo](nametag.jpg)
+![Logo](nametag.png)
 
 # HMNI
 Fuzzy name matching with machine learning. Perform common fuzzy name matching tasks including similarity scoring, record linkage, deduplication and normalization.

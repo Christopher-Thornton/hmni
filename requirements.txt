@@ -1,0 +1,10 @@
+tensorflow>=1.11,< 2.0
+pandas >= 0.25
+numpy
+unidecode
+fuzzywuzzy
+abydos
+sklearn
+nltk
+joblib
+six

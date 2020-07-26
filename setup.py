@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup_args = dict(
     name='hmni',
-    version='0.1.1',
+    version='0.1.0',
     description='Fuzzy Name Matching with Machine Learning',
     license='MIT',
     packages=find_packages(),

@@ -1,9 +1,9 @@
 tensorflow>=1.11,< 2.0
-pandas >= 0.25
+pandas>=0.25
 numpy
 unidecode
 fuzzywuzzy
-abydos
+abydos==0.5.0
 sklearn
 nltk
 joblib

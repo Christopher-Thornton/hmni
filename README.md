@@ -33,13 +33,13 @@ matcher = hmni.Matcher(model='latin')
 #### Single Pair Similarity
 ```python
 matcher.similarity('Alan', 'Al')
-#0.6838301782536617
+# 0.6838301782536617
 
 matcher.similarity('Alan', 'Al', prob=False)
-#1
+# 1
 
 matcher.similarity('Alan Turing', 'Al Turing', sirname_first=False)
-#0.6838301782536617
+# 0.6838301782536617
 ```
 #### Record Linkage
 ```python
@@ -55,13 +55,13 @@ merged = matcher.fuzzymerge(df1, df2, how='left', on='name')
 names_list = ['Alan', 'Al', 'Al', 'James']
 
 matcher.dedupe(names_list, keep='longest')
-#['Alan', 'James']
+# ['Alan', 'James']
 
 matcher.dedupe(names_list, keep='frequent')
-#['Al, 'James']
+# ['Al, 'James']
 
 matcher.dedupe(names_list, keep='longest', replace=True)
-#['Alan, 'Alan', 'Alan', 'James']
+# ['Alan, 'Alan', 'Alan', 'James']
 ```
 ## Matcher Methods and Parameters
 > **similarity**(name_a, name_b, prob=True, sirname_first=False)

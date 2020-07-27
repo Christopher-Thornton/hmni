@@ -11,6 +11,7 @@ setup_args = dict(
     long_description_content_type='text/markdown',
     license='MIT',
     packages=find_packages(),
+    include_package_data=True,
     author='Christopher Thornton',
     author_email='christopher_thornton@outlook.com',
     keywords=['natural-language-processing', 'nlp', 'machine-learning', 'data-science', 'python', 'artificial-intelligence', 'ai', 'nlp-library'],

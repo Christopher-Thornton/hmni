@@ -27,8 +27,8 @@ pip install hmni
 ```
 #### Initialize a Matcher Object
 ```python
-import hdmi
-matcher = hdmi.Matcher(model='latin')
+import hmni
+matcher = hmni.Matcher(model='latin')
 ```
 #### Single Pair Similarity
 ```python

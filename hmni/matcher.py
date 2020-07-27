@@ -234,7 +234,7 @@ class Matcher:
         if seen is not None:
             return seen
         # chained processing steps
-        processed_name = re.sub('[^a-zA-Z]+', '', unidecode.unidecode(name).lower().strip()) \
+        processed_name = re.sub('[^a-zA-Z\W]+', '', unidecode.unidecode(name).lower().strip()) \
             .replace('\'s', '').replace('\'', '')
         processed_name = [x for x in re.split('\W+', processed_name) if x != '']
         # add processed name to the seen dictionary

@@ -8,9 +8,17 @@ setup_args = dict(
     packages=find_packages(),
     author='Christopher Thornton',
     author_email='christopher_thornton@outlook.com',
-    keywords=['natural-language-processing', 'nlp', 'machine-learning', 'data-science', 'python', 'artificial-intelligence', 'ai', 'nlp-library']
+    keywords=['natural-language-processing', 'nlp', 'machine-learning', 'data-science', 'python', 'artificial-intelligence', 'ai', 'nlp-library'],
     url='https://github.com/Christopher-Thornton/hmni',
-    download_url='https://github.com/Christopher-Thornton/hmni/archive/v0.1.0.zip'
+    download_url='https://github.com/Christopher-Thornton/hmni/archive/v0.1.0.zip',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+  ]
 )
 
 install_requires = [

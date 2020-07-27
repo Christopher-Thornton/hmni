@@ -8,6 +8,7 @@ setup_args = dict(
     version='0.1.0',
     description='Fuzzy Name Matching with Machine Learning',
     long_description=readme,
+    long_description_content_type='text/markdown',
     license='MIT',
     packages=find_packages(),
     author='Christopher Thornton',

@@ -1,4 +1,6 @@
-![Logo](nametag.png)
+<p align="center">
+  <img src="https://github.com/Christopher-Thornton/hmni/blob/master/nametag.png?raw=true" alt="logo" />
+</p>
 
 # HMNI
 Fuzzy name matching with machine learning. Perform common fuzzy name matching tasks including similarity scoring, record linkage, deduplication and normalization.

@@ -1,9 +1,13 @@
 from setuptools import setup, find_packages
 
+with open('README.md', encoding='utf8') as f:
+    readme = f.read()
+
 setup_args = dict(
     name='hmni',
     version='0.1.0',
     description='Fuzzy Name Matching with Machine Learning',
+    long_description=readme,
     license='MIT',
     packages=find_packages(),
     author='Christopher Thornton',
@@ -18,7 +22,7 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-  ]
+  ],
 )
 
 install_requires = [

@@ -54,13 +54,13 @@ merged = matcher.fuzzymerge(df1, df2, how='left', on='name')
 ```python
 names_list = ['Alan', 'Al', 'Al', 'James']
 
-matcher.dedup(names_list, keep='longest')
+matcher.dedupe(names_list, keep='longest')
 #['Alan', 'James']
 
-matcher.dedup(names_list, keep='frequent')
+matcher.dedupe(names_list, keep='frequent')
 #['Al, 'James']
 
-matcher.dedup(names_list, keep='longest', replace=True)
+matcher.dedupe(names_list, keep='longest', replace=True)
 #['Alan, 'Alan', 'Alan', 'James']
 ```
 ## Matcher Methods and Parameters

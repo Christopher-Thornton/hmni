@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with open('README.md', encoding='utf8') as f:
     readme = f.read()
@@ -10,7 +10,7 @@ setup_args = dict(
     long_description=readme,
     long_description_content_type='text/markdown',
     license='MIT',
-    packages=find_packages(),
+    packages=['hmni', 'hmni.models'],
     include_package_data=True,
     author='Christopher Thornton',
     author_email='christopher_thornton@outlook.com',

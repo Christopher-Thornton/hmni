@@ -30,10 +30,10 @@ from abydos.distance import (IterativeSubString, BISIM, DiscountedLevenshtein, P
                              MRA, Editex, SAPS, FlexMetric, JaroWinkler, HigueraMico, Sift4, Eudex, ALINE, Covington,
                              PhoneticEditDistance)
 
+import logging
+logging.getLogger('tensorflow').setLevel(logging.FATAL)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
-
-tf.logging.set_verbosity(tf.logging.FATAL)
 
 import sys
 

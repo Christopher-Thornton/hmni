@@ -7,9 +7,11 @@ Fuzzy name matching with machine learning. Perform common fuzzy name matching ta
 
 HMNI is trained on an internationally-transliterated Latin firstname dataset, where precision is afforded priority.
 
-|    Model    |  Accuracy | Precision |   Recall  |  F1-Score |
-|-------------|-----------|-----------|-----------|-----------|
-| HMNI-Latin  | 0.9393    | 0.9255    | 0.7548    | 0.8315    |
+|    Model    |  Accuracy | Precision |   Recall  |  F1-Score 
+|-------------|-----------|-----------|-----------|-----------
+| HMNI-Latin  | 0.9393    | 0.9255    | 0.7548    | 0.8315    
+
+For an introduction to the methodology and research behind HMNI, please refer to my [blog post](https://towardsdatascience.com/fuzzy-name-matching-with-machine-learning-f09895dce7b4).
 
 ## Requirements
 ### Python 3.5/3.6/3.7

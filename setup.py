@@ -5,7 +5,7 @@ with open('README.md', encoding='utf8') as f:
 
 setup_args = dict(
     name='hmni',
-    version='0.1.3',
+    version='0.1.4',
     description='Fuzzy Name Matching with Machine Learning',
     long_description=readme,
     long_description_content_type='text/markdown',

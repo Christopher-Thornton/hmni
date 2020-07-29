@@ -12,7 +12,12 @@ import unidecode
 import numpy as np
 import pandas as pd
 from random import randint
-from fuzzywuzzy import fuzz
+
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=UserWarning)
+    from fuzzywuzzy import fuzz
+    
 from collections import Counter
 from hmni import syllable_tokenizer
 from hmni import input_helpers

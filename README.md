@@ -9,9 +9,10 @@ HMNI is trained on an internationally-transliterated Latin firstname dataset, wh
 
 |    Model    |  Accuracy | Precision |   Recall  |  F1-Score |
 |-------------|-----------|-----------|-----------|-----------|
-| HMNI-Latin  | 0.9379    | 0.9194    | 0.7528    | 0.8278    |
+| HMNI-Latin  | 0.9393    | 0.9255    | 0.7548    | 0.8315    |
 
 ## Requirements
+### Python 3.5/3.6/3.7
 -  tensorflow V1
 -  sklearn
 -  fuzzywuzzy

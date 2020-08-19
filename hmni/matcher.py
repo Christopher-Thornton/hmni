@@ -47,7 +47,6 @@ class Matcher:
     def __init__(self, model='latin'):
         self.model = model
         self.impH = input_helpers.InputHelper()
-        self.ST = syllable_tokenizer.SyllableTokenizer()
         # Phonetic Encoder
         self.pe = Ainsworth()
         # Soundex Firstname Algorithm
@@ -251,8 +250,8 @@ class Matcher:
             raise ValueError(
                 'Length mismatch: Expected axis has 2 elements, new values have {} elements'.format(len(pair)))
         # syllable tokenize names
-        syll_a = self.ST.tokenize(pair[0])
-        syll_b = self.ST.tokenize(pair[1])
+        syll_a = syllable_tokenizer.syllables(pair[0])
+        syll_b = syllable_tokenizer.syllables(pair[1])
 
         # generate unique features
         features = np.zeros(23)

@@ -41,7 +41,7 @@ matcher.similarity('Alan', 'Al')
 matcher.similarity('Alan', 'Al', prob=False)
 # 1
 
-matcher.similarity('Alan Turing', 'Al Turing', sirname_first=False)
+matcher.similarity('Alan Turing', 'Al Turing', surname_first=False)
 # 0.6838301782536617
 ```
 #### Record Linkage
@@ -67,14 +67,14 @@ matcher.dedupe(names_list, keep='longest', replace=True)
 # ['Alan, 'Alan', 'Alan', 'James']
 ```
 ## Matcher Methods and Parameters
-> **similarity**(name_a, name_b, prob=True, sirname_first=False)
+> **similarity**(name_a, name_b, prob=True, surname_first=False)
 * **name_a** *(str)* -- First name for comparison
 * **name_b** *(str)* -- Second name for comparison
 * **prob** *(bool)* -- If True return a predicted probability, else binary class label
 * **threshold** *(float)* -- Prediction probability threshold for positive match (0.5 by default)
-* **sirname_first** *(bool)* -- If name strings start with sirname (False by default)
+* **surname_first** *(bool)* -- If name strings start with surname (False by default)
 
-> **fuzzymerge**(df1, df2, how='inner', on=None, left_on=None, right_on=None, indicator=False, limit=1, threshold=0.5, allow_exact_matches=True, sirname_first=False)
+> **fuzzymerge**(df1, df2, how='inner', on=None, left_on=None, right_on=None, indicator=False, limit=1, threshold=0.5, allow_exact_matches=True, surname_first=False)
 * **df1** *(pandas DataFrame or named Series)* -- First/Left object to merge with
 * **df2** *(pandas DataFrame or named Series)* -- Second/Right object to merge with
 * **how** *(str)* -- Type of merge to be performed
@@ -89,9 +89,9 @@ matcher.dedupe(names_list, keep='longest', replace=True)
 * **limit** *(int)* -- Top number of name matches to consider (1 by default)     
 * **threshold** *(float)* -- Prediction probability threshold for positive match (0.5 by default)       
 * **allow_exact_matches** *(bool)* -- If True allow merging on exact name matches, else do not consider exact matches (True by default)
-* **sirname_first** *(bool)* -- If name strings start with sirname (False by default)
+* **surname_first** *(bool)* -- If name strings start with surname (False by default)
 
-> **dedupe**(names, threshold=0.5, keep='longest', reverse=True, limit=3, replace=False, sirname_first=False)
+> **dedupe**(names, threshold=0.5, keep='longest', reverse=True, limit=3, replace=False, surname_first=False)
 * **names** *(list)* -- List of names to dedupe
 * **threshold** *(float)* -- Prediction probability threshold for positive match (0.5 by default)
 * **keep** *(str)* -- Specifies method for keeping one of multiple alternative names 
@@ -100,7 +100,7 @@ matcher.dedupe(names_list, keep='longest', replace=True)
 * **reverse** *(bool)* -- If True will sort matches descending order, else ascending (True by default)
 * **limit** *(int)* -- Top number of name matches to consider (3 by default)
 * **replace** *(bool)* -- If True return normalized name list, else return deduplicated name list (False by default) 
-* **sirname_first** *(bool)* -- If name strings start with sirname (False by default)
+* **surname_first** *(bool)* -- If name strings start with surname (False by default)
 
 ## Contributing
 Pull requests are welcome. 

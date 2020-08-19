@@ -19,7 +19,6 @@ For an introduction to the methodology and research behind HMNI, please refer to
 -  sklearn
 -  fuzzywuzzy
 -  abydos
--  nltk
 -  unidecode
 
 ## QUICK USAGE GUIDE

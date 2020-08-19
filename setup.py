@@ -5,7 +5,7 @@ with open('README.md', encoding='utf8') as f:
 
 setup_args = dict(
     name='hmni',
-    version='0.1.4',
+    version='0.1.5',
     description='Fuzzy Name Matching with Machine Learning',
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -16,7 +16,7 @@ setup_args = dict(
     author_email='christopher_thornton@outlook.com',
     keywords=['fuzzy-matching', 'natural-language-processing', 'nlp', 'machine-learning', 'data-science', 'python', 'artificial-intelligence', 'ai'],
     url='https://github.com/Christopher-Thornton/hmni',
-    download_url='https://github.com/Christopher-Thornton/hmni/archive/v0.1.4.zip',
+    download_url='https://github.com/Christopher-Thornton/hmni/archive/v0.1.5.zip',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
@@ -35,7 +35,6 @@ install_requires = [
     'fuzzywuzzy',
     'abydos == 0.5.0',
     'sklearn',
-    'nltk',
     'joblib',
     'six'
 ]

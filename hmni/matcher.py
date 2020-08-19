@@ -104,7 +104,7 @@ class Matcher:
         self.seen_pairs = {}
 
 
-    def similarity(self, name_a, name_b, prob=True, threshold=0.5, sirname_first=False):
+    def similarity(self, name_a, name_b, prob=True, threshold=0.5, surname_first=False):
         # input validation
         if not (isinstance(name_a, str) and isinstance(name_b, str)):
             raise TypeError('Only string comparison is supported in similarity method')
@@ -117,7 +117,7 @@ class Matcher:
         name_a = self.preprocess(name_a)
         name_b = self.preprocess(name_b)
 
-        if sirname_first:
+        if surname_first:
             fname_a, lname_a, fname_b, lname_b = name_a[-1], name_a[0], name_b[-1], name_b[0]
         else:
             fname_a, lname_a, fname_b, lname_b = name_a[0], name_a[-1], name_b[0], name_b[-1]
@@ -155,7 +155,7 @@ class Matcher:
         return 1 if sim >= threshold else 0
 
     def fuzzymerge(self, df1, df2, how='inner', on=None, left_on=None, right_on=None, indicator=False,
-                   limit=1, threshold=0.5, allow_exact_matches=True, sirname_first=False):
+                   limit=1, threshold=0.5, allow_exact_matches=True, surname_first=False):
         # TODO parameter validation
         if not (0 < threshold < 1):
             raise ValueError('threshold must be decimal number between 0 and 1 (given = {})'.format(threshold))
@@ -177,14 +177,14 @@ class Matcher:
 
         df1[key] = df1[k1].apply(
             lambda x: self.get_top_matches(x, df2[k2], limit=limit, thresh=threshold,
-                                           exact=allow_exact_matches, sirname_first=sirname_first))
+                                           exact=allow_exact_matches, surname_first=surname_first))
         df1 = df1.explode(key)
         df1[key] = df1.apply(lambda row: row.key[0], axis=1)
         df1 = df1.merge(df2, how=how, left_on=key, right_on=right_on, indicator=indicator)
         del df1[key]
         return df1
 
-    def dedupe(self, names, threshold=0.5, keep='longest', replace=False, reverse=True, sirname_first=False, limit=3):
+    def dedupe(self, names, threshold=0.5, keep='longest', replace=False, reverse=True, surname_first=False, limit=3):
         # parameter validation
         if keep not in ('longest', 'frequent'):
             raise ValueError(
@@ -206,7 +206,7 @@ class Matcher:
                 pass
             # find fuzzy matches
             matches = self.get_top_matches(item, names, limit=limit, thresh=threshold,
-                                           exact=True, sirname_first=sirname_first)
+                                           exact=True, surname_first=surname_first)
             # no duplicates found
             if len(matches) == 0:
                 results.append(item)
@@ -306,18 +306,18 @@ class Matcher:
         if h in mapping:
             return mapping[h]
 
-    def get_top_matches(self, name, choices, thresh=0.5, exact=True, limit=1, sirname_first=False):
-        sl = self.get_matches(name, choices, thresh, exact, sirname_first=sirname_first)
+    def get_top_matches(self, name, choices, thresh=0.5, exact=True, limit=1, surname_first=False):
+        sl = self.get_matches(name, choices, thresh, exact, surname_first=surname_first)
         return heapq.nlargest(limit, sl, key=lambda i: i[1]) if limit is not None else sorted(
             sl, key=lambda i: i[1], reverse=True)
 
-    def get_matches(self, name, choices, score_cutoff=0.5, exact=True, sirname_first=False):
+    def get_matches(self, name, choices, score_cutoff=0.5, exact=True, surname_first=False):
         # catch generators without lengths
         if choices is None or len(choices) == 0:
             return
 
         exact = 2 if exact is True else 1
         for choice in choices:
-            score = self.similarity(name, choice, sirname_first=sirname_first)
+            score = self.similarity(name, choice, surname_first=surname_first)
             if exact > score >= score_cutoff:
                 yield choice, score

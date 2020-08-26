@@ -79,11 +79,15 @@ class Matcher:
 
         graph = tf.Graph()
         with graph.as_default() as graph:
-            self.sess = tf.Session()
+            self.sess = tf.Session() if tf.__version__[0] == '1' else tf.compat.v1.Session()
             with self.sess.as_default():
                 # Load the saved meta graph and restore variables
-                saver = tf.train.import_meta_graph('{}.meta'.format(siamese_model))
-                self.sess.run(tf.global_variables_initializer())
+                if tf.__version__[0] == '1':
+                    saver = tf.train.import_meta_graph('{}.meta'.format(siamese_model))
+                    self.sess.run(tf.global_variables_initializer())
+                else:
+                    saver = tf.compat.v1.train.import_meta_graph('{}.meta'.format(siamese_model))
+                    self.sess.run(tf.compat.v1.global_variables_initializer())
                 saver.restore(self.sess, siamese_model)
                 # Get the placeholders from the graph by name
             self.input_x1 = graph.get_operation_by_name('input_x1').outputs[0]

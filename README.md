@@ -16,7 +16,7 @@ For an introduction to the methodology and research behind HMNI, please refer to
 ## Requirements
 ### Python 3.5–3.8
 -  tensorflow
--  sklearn
+-  scikit-learn
 -  fuzzywuzzy
 -  abydos
 -  unidecode

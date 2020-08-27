@@ -14,8 +14,8 @@ HMNI is trained on an internationally-transliterated Latin firstname dataset, wh
 For an introduction to the methodology and research behind HMNI, please refer to my [blog post](https://towardsdatascience.com/fuzzy-name-matching-with-machine-learning-f09895dce7b4).
 
 ## Requirements
-### Python 3.5/3.6/3.7
--  tensorflow V1
+### Python 3.5–3.8
+-  tensorflow
 -  sklearn
 -  fuzzywuzzy
 -  abydos
@@ -35,13 +35,13 @@ matcher = hmni.Matcher(model='latin')
 #### Single Pair Similarity
 ```python
 matcher.similarity('Alan', 'Al')
-# 0.6838301782536617
+# 0.6838303319889133
 
 matcher.similarity('Alan', 'Al', prob=False)
 # 1
 
 matcher.similarity('Alan Turing', 'Al Turing', surname_first=False)
-# 0.6838301782536617
+# 0.6838303319889133
 ```
 #### Record Linkage
 ```python

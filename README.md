@@ -3,6 +3,14 @@
 </p>
 
 # HMNI
+
+![GitHub](https://img.shields.io/github/license/Christopher-Thornton/hmni)
+![PyPI](https://img.shields.io/pypi/v/hmni)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hmni)
+[![Documentation Status](https://readthedocs.org/projects/hmni/badge/?version=latest)](https://hmni.readthedocs.io/en/latest/?badge=latest)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/hmni)
+![GitHub repo size](https://img.shields.io/github/repo-size/Christopher-Thornton/hmni)
+
 Fuzzy name matching with machine learning. Perform common fuzzy name matching tasks including similarity scoring, record linkage, deduplication and normalization.
 
 HMNI is trained on an internationally-transliterated Latin firstname dataset, where precision is afforded priority.

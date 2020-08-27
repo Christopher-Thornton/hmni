@@ -28,15 +28,14 @@ setup_args = dict(
 )
 
 install_requires = [
-    'tensorflow >= 1.11,< 2.0',
+    'tensorflow',
     'pandas >= 0.25',
     'numpy',
     'unidecode',
     'fuzzywuzzy',
     'abydos == 0.5.0',
     'sklearn',
-    'joblib',
-    'six'
+    'joblib'
 ]
 
 

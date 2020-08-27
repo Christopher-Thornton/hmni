@@ -34,7 +34,7 @@ install_requires = [
     'unidecode',
     'fuzzywuzzy',
     'abydos == 0.5.0',
-    'sklearn',
+    'scikit-learn',
     'joblib'
 ]
 

@@ -25,15 +25,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import numpy as np
 import re
 from tensorflow.python.platform import gfile
+
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
-import six
 import collections
 
 TOKENIZER_RE = re.compile(r"[A-Z]{2,}(?![a-z])|[A-Z][a-z]+(?=[A-Z])|[\'\w\-]+", re.UNICODE)
@@ -55,7 +54,6 @@ class CategoricalVocabulary(object):
   Accumulates and provides mapping from classes to indexes.
   Can be easily used for words.
   """
-
     def __init__(self, unknown_token="<UNK>", support_reverse=True):
         self._unknown_token = unknown_token
         self._mapping = {unknown_token: 0}
@@ -115,7 +113,7 @@ class CategoricalVocabulary(object):
         # Sort by alphabet then reversed frequency.
         self._freq = sorted(
             sorted(
-                six.iteritems(self._freq),
+                self._freq.items(),
                 key=lambda x: (isinstance(x[0], str), x[0])),
             key=lambda x: x[1],
             reverse=True)
@@ -151,6 +149,7 @@ class CategoricalVocabulary(object):
 
 class VocabularyProcessor(object):
     """Maps documents to sequences of word ids."""
+
     def __init__(self,
                  max_document_length,
                  min_frequency=0,
@@ -176,11 +175,10 @@ class VocabularyProcessor(object):
         else:
             self._tokenizer = tokenizer
 
-    def fit(self, raw_documents, unused_y=None):
+    def fit(self, raw_documents):
         """Learn a vocabulary dictionary of all tokens in the raw documents.
         Args:
           raw_documents: An iterable which yield either str or unicode.
-          unused_y: to match fit format signature of estimators.
         Returns:
           self
         """
@@ -192,11 +190,10 @@ class VocabularyProcessor(object):
         self.vocabulary_.freeze()
         return self
 
-    def fit_transform(self, raw_documents, unused_y=None):
+    def fit_transform(self, raw_documents):
         """Learn the vocabulary dictionary and return indexies of words.
         Args:
           raw_documents: An iterable which yield either str or unicode.
-          unused_y: to match fit_transform signature of estimators.
         Returns:
           x: iterable, [n_samples, max_document_length]. Word-id matrix.
         """
@@ -247,7 +244,6 @@ def tokenizer_char(iterator):
 
 class MyVocabularyProcessor(VocabularyProcessor):
     def __init__(self, max_document_length, min_frequency=0, vocabulary=None):
-
         super().__init__(max_document_length, min_frequency, vocabulary)
         sup = super(MyVocabularyProcessor, self)
         sup.__init__(max_document_length, min_frequency, vocabulary,

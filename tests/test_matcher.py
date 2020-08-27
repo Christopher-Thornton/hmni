@@ -7,7 +7,7 @@ matcher = hmni.Matcher(model='latin')
 
 # similarity
 def test_similarity():
-    assert matcher.similarity('Alan', 'Al') == 0.6838301782536617
+    assert matcher.similarity('Alan', 'Al') == 0.6838303319889133
     assert matcher.similarity('Alan', 'Al', prob=False) == 1
     assert matcher.similarity('Alan', 'Aiden', prob=False) == 0
 

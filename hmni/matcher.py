@@ -41,6 +41,17 @@ sys.modules['syllable_tokenizer'] = syllable_tokenizer
 sys.modules['input_helpers'] = input_helpers
 sys.modules['preprocess'] = preprocess
 
+# guard against uncomputable recursion with max name length
+class CovingtonGuard(Covington):
+    def dist(self, src, tar, max_length=11):
+        src = src[:max_length]
+        tar = tar[:max_length]
+        normalizer = self._weights[5] * min(len(src), len(tar))
+        if len(src) != len(tar):
+            normalizer += self._weights[7]
+        normalizer += self._weights[6] * abs(abs(len(src) - len(tar)) - 1)
+        return self.dist_abs(src, tar) / normalizer
+
 
 class Matcher:
 
@@ -54,7 +65,7 @@ class Matcher:
         # String Distance algorithms
         self.algos = [IterativeSubString(), BISIM(), DiscountedLevenshtein(), Prefix(), LCSstr(), MLIPNS(),
                       Strcmp95(), MRA(), Editex(), SAPS(), FlexMetric(), JaroWinkler(mode='Jaro'), HigueraMico(),
-                      Sift4(), Eudex(), ALINE(), Covington(), PhoneticEditDistance()]
+                      Sift4(), Eudex(), ALINE(), CovingtonGuard(), PhoneticEditDistance()]
         self.algo_names = ['iterativesubstring', 'bisim', 'discountedlevenshtein', 'prefix', 'lcsstr', 'mlipns',
                            'strcmp95', 'mra', 'editex', 'saps', 'flexmetric', 'jaro', 'higueramico',
                            'sift4', 'eudex', 'aline', 'covington', 'phoneticeditdistance']

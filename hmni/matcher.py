@@ -137,6 +137,11 @@ class Matcher:
             tar.close()
         return model_dir
 
+    def return_sim(self, sim, prob, threshold):
+        if prob:
+            return sim
+        return 1 if sim >= threshold else 0
+
     def similarity(self, name_a, name_b, prob=True, threshold=0.5, surname_first=False):
         # input validation
         if not (isinstance(name_a, str) and isinstance(name_b, str)):
@@ -189,23 +194,23 @@ class Matcher:
                     if not missing_component:
                         return 0
                 elif missing_component:
-                    return 0.5
+                    return self.return_sim(0.5, prob=prob, threshold=threshold)
             elif lname_a != lname_b and not missing_component:
                 return 0
             elif missing_component:
-                return 0.5
+                return self.return_sim(0.5, prob=prob, threshold=threshold)
 
         # check initial match in firstname
         if len(fname_a) == 1 or len(fname_b) == 1:
             if fname_a[0] == fname_b[0]:
-                return 0.5
+                return self.return_sim(0.5, prob=prob, threshold=threshold)
             return 0
 
         # check if firstname is same
         if fname_a == fname_b:
             if not missing_component and not initial_lname:
                 return 1
-            return 0.5
+            return self.return_sim(0.5, prob=prob, threshold=threshold)
 
         # sort pair to normalize
         pair = tuple(sorted((fname_a, fname_b), key=lambda item: (-len(item), item)))
@@ -220,25 +225,23 @@ class Matcher:
         # return pair score if seen
         seen = self.seen_set(pair, self.seen_pairs)
         if seen is not None:
-            if prob:
-                return seen
-            return 1 if seen >= threshold else 0
+            if initial_lname:
+                seen = min(0.5, seen)
+            return self.return_sim(seen, prob=prob, threshold=threshold)
 
         # generate features for base-level model
         features = self.featurize(pair)
-
         # make inference on meta model
         sim = self.meta_inf(pair, features)
-        if initial_lname:
-            sim = min(0.5, sim)
 
         if not missing_component:
             # add pair score to the seen dictionary
             self.seen_pairs[hash(pair)] = sim
 
-        if prob:
-            return sim
-        return 1 if sim >= threshold else 0
+        if initial_lname:
+            sim = min(0.5, sim)
+
+        return self.return_sim(sim, prob=prob, threshold=threshold)
 
     def fuzzymerge(self, df1, df2, how='inner', on=None, left_on=None, right_on=None, indicator=False,
                    limit=1, threshold=0.5, allow_exact_matches=True, surname_first=False):

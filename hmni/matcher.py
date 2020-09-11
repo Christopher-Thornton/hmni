@@ -14,10 +14,11 @@ import pandas as pd
 from random import randint
 
 import warnings
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=UserWarning)
     from fuzzywuzzy import fuzz
-    
+
 from collections import Counter
 from hmni import syllable_tokenizer
 from hmni import input_helpers
@@ -25,12 +26,13 @@ from hmni import preprocess
 import tarfile
 
 from abydos.phones import *
-from abydos.phonetic import PSHPSoundexFirst, Ainsworth
+from abydos.phonetic import PSHPSoundexFirst, PSHPSoundexLast, Ainsworth
 from abydos.distance import (IterativeSubString, BISIM, DiscountedLevenshtein, Prefix, LCSstr, MLIPNS, Strcmp95,
                              MRA, Editex, SAPS, FlexMetric, JaroWinkler, HigueraMico, Sift4, Eudex, ALINE, Covington,
                              PhoneticEditDistance)
 
 import logging
+
 logging.getLogger('tensorflow').setLevel(logging.FATAL)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
@@ -40,6 +42,7 @@ import sys
 sys.modules['syllable_tokenizer'] = syllable_tokenizer
 sys.modules['input_helpers'] = input_helpers
 sys.modules['preprocess'] = preprocess
+
 
 # guard against uncomputable recursion with max name length
 class CovingtonGuard(Covington):
@@ -55,13 +58,29 @@ class CovingtonGuard(Covington):
 
 class Matcher:
 
-    def __init__(self, model='latin'):
+    def __init__(self, model='latin', prefilter=True, allow_alt_surname=True, allow_initials=True,
+                 allow_missing_components=True):
+
+        # user-provided parameters
         self.model = model
+        self.allow_alt_surname = allow_alt_surname
+        self.allow_initials = allow_initials
+        self.allow_missing_components = allow_missing_components
+        self.prefilter = prefilter
+        if self.prefilter:
+            self.chars = re.compile('[bcdfghjklmnpqrstvwxz]')
+
+        # verify user-supplied class arguments
+        model_dir = self.validate_parameters()
+
         self.impH = input_helpers.InputHelper()
         # Phonetic Encoder
         self.pe = Ainsworth()
         # Soundex Firstname Algorithm
         self.pshp_soundex_first = PSHPSoundexFirst()
+        # Soundex Lastname Algorithm
+        self.pshp_soundex_last = PSHPSoundexLast()
+
         # String Distance algorithms
         self.algos = [IterativeSubString(), BISIM(), DiscountedLevenshtein(), Prefix(), LCSstr(), MLIPNS(),
                       Strcmp95(), MRA(), Editex(), SAPS(), FlexMetric(), JaroWinkler(mode='Jaro'), HigueraMico(),
@@ -69,15 +88,6 @@ class Matcher:
         self.algo_names = ['iterativesubstring', 'bisim', 'discountedlevenshtein', 'prefix', 'lcsstr', 'mlipns',
                            'strcmp95', 'mra', 'editex', 'saps', 'flexmetric', 'jaro', 'higueramico',
                            'sift4', 'eudex', 'aline', 'covington', 'phoneticeditdistance']
-
-
-        # extract model tarball into directory if doesnt exist
-        model_dir = os.path.join(os.path.dirname(__file__), "models", self.model)
-        if not os.path.exists(model_dir):
-            os.makedirs(model_dir)
-            tar = tarfile.open(os.path.join(os.path.dirname(__file__), "models", self.model+".tar.gz"), "r:gz")
-            tar.extractall(model_dir)
-            tar.close()
 
         # String Distance Pipeline (Level 0/Base Model)
         self.baseModel = joblib.load(os.path.join(model_dir, 'base.pkl'))
@@ -88,6 +98,7 @@ class Matcher:
 
         siamese_model = os.path.join(model_dir, 'siamese')
 
+        # start tensorflow session
         graph = tf.Graph()
         with graph.as_default() as graph:
             self.sess = tf.Session() if tf.__version__[0] == '1' else tf.compat.v1.Session()
@@ -113,20 +124,20 @@ class Matcher:
 
         # seen names (mapping dict from raw name to processed name)
         self.seen_names = {}
-
         # seen pairs (mapping dict from name pair tuple to similarity)
         self.seen_pairs = {}
 
+    def validate_parameters(self):
+        # extract model tarball into directory if doesnt exist
+        model_dir = os.path.join(os.path.dirname(__file__), "models", self.model)
+        if not os.path.exists(model_dir):
+            tar = tarfile.open(os.path.join(os.path.dirname(__file__), "models", self.model + ".tar.gz"), "r:gz")
+            os.makedirs(model_dir)
+            tar.extractall(model_dir)
+            tar.close()
+        return model_dir
 
-    def similarity(self, name_a, name_b, prob=True, threshold=0.5, surname_first=False):
-        # input validation
-        if not (isinstance(name_a, str) and isinstance(name_b, str)):
-            raise TypeError('Only string comparison is supported in similarity method')
-
-        # exact match returns 1
-        if name_a == name_b:
-            return 1
-
+    def add_sim(self, name_a, name_b, sim, surname_first=False):
         # preprocess names
         name_a = self.preprocess(name_a)
         name_b = self.preprocess(name_b)
@@ -136,19 +147,92 @@ class Matcher:
         else:
             fname_a, lname_a, fname_b, lname_b = name_a[0], name_a[-1], name_b[0], name_b[-1]
 
-        if len(name_a) > 1 and len(name_b) > 1:
-            if lname_a != lname_b:
+        # sort pair to normalize
+        pair = tuple(sorted((fname_a, fname_b), key=lambda item: (-len(item), item)))
+
+        # add pair score to the seen dictionary
+        self.seen_pairs[hash(pair)] = sim
+
+    def similarity(self, name_a, name_b, prob=True, threshold=0.5, surname_first=False):
+        # input validation
+        if not (isinstance(name_a, str) and isinstance(name_b, str)):
+            raise TypeError('Only string comparison is supported in similarity method')
+
+        # empty or single character string returns 0
+        if len(name_a) < 2 or len(name_b) < 2:
+            return 0
+
+        # exact match returns 1
+        if name_a == name_b:
+            return 1
+
+        # preprocess names
+        name_a = self.preprocess(name_a)
+        name_b = self.preprocess(name_b)
+
+        # empty or single character string returns 0
+        if len(name_a) == 0 or len(name_b) == 0:
+            return 0
+
+        # check for missing name components
+        missing_component = False
+        one_component = False
+        if len(name_a) == 1 and len(name_b) == 1:
+            one_component = True
+        elif len(name_a) == 1 or len(name_b) == 1:
+            if not self.allow_missing_components:
                 return 0
+            missing_component = True
+
+        if surname_first:
+            fname_a, lname_a, fname_b, lname_b = name_a[-1], name_a[0], name_b[-1], name_b[0]
+        else:
+            fname_a, lname_a, fname_b, lname_b = name_a[0], name_a[-1], name_b[0], name_b[-1]
+
+        # check for initials in first and lastnames
+        if not self.allow_initials and any(len(x) == 1 for x in [fname_a, lname_a, fname_b, lname_b]):
+            return 0
+
+        # lastname conditions
+        initial_lname = False
+        if len(lname_a) == 1 or len(lname_b) == 1:
+            if lname_a[0] != lname_b[0] and not missing_component:
+                return 0
+            initial_lname = True
+        elif not one_component:
+            if self.allow_alt_surname:
+                if self.pshp_soundex_last.encode(lname_a) != self.pshp_soundex_last.encode(lname_b):
+                    if not missing_component:
+                        return 0
+                elif missing_component:
+                    return 0.5
+            elif lname_a != lname_b and not missing_component:
+                return 0
+            elif missing_component:
+                return 0.5
+
+        # check initial match in firstname
+        if len(fname_a) == 1 or len(fname_b) == 1:
+            if fname_a[0] == fname_b[0]:
+                return 0.5
+            return 0
+
+        # check if firstname is same
+        if fname_a == fname_b:
+            if not missing_component and not initial_lname:
+                return 1
+            return 0.5
 
         # sort pair to normalize
         pair = tuple(sorted((fname_a, fname_b), key=lambda item: (-len(item), item)))
 
-        # empty or single-character initial-like string returns 0
-        if len(pair[0]) <= 1 or len(pair[1]) <= 1:
-            return 0
-        # exact match returns 1
-        if pair[0] == pair[1]:
-            return 1
+        if self.prefilter and not missing_component and pair[0][0] != pair[1][0]:
+            # prefilter candidates using heuristics on firstname
+            cons = set(self.chars.findall(pair[1]))
+            # filter if no matching consonant
+            if len(cons) > 0 and not any(c in cons for c in set(self.chars.findall(pair[0]))):
+                return 0
+
         # return pair score if seen
         seen = self.seen_set(pair, self.seen_pairs)
         if seen is not None:
@@ -161,9 +245,13 @@ class Matcher:
 
         # make inference on meta model
         sim = self.meta_inf(pair, features)
+        if initial_lname:
+            sim = min(0.5, sim)
 
-        # add pair score to the seen dictionary
-        self.seen_pairs[hash(pair)] = sim
+        if not missing_component:
+            # add pair score to the seen dictionary
+            self.seen_pairs[hash(pair)] = sim
+
         if prob:
             return sim
         return 1 if sim >= threshold else 0
@@ -231,7 +319,6 @@ class Matcher:
                     # sort by longest to shortest
                     matches = sorted(matches, key=lambda x: len(x[0]), reverse=reverse)
                 elif keep == 'frequent':
-                    # add frequencies
                     # sort by most frequent, then longest
                     matches = sorted(matches, key=lambda x: (count[x[0]], len(x[0])), reverse=reverse)
                 else:

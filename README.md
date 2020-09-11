@@ -73,7 +73,15 @@ matcher.dedupe(names_list, keep='frequent')
 matcher.dedupe(names_list, keep='longest', replace=True)
 # ['Alan, 'Alan', 'Alan', 'James']
 ```
-## Matcher Methods and Parameters
+## Matcher Parameters
+> **hmni.Matcher**(model='latin', prefilter=True, allow_alt_surname=True, allow_initials=True, allow_missing_components=True)
+* **model** *(str)* -- HMNI statistical model (latin by default)
+* **prefilter** *(bool)* -- Should the matcher prefilter unlikely candidates (True by default)
+* **allow_alt_surname** *(bool)* -- Should the matcher consider phonetic matching surnames *e.g. Smith, Schmidt* (True by default)
+* **allow_initials** *(bool)* -- Should the matcher consider names with initials (True by default)
+* **allow_missing_components** *(bool)* -- Should the matcher consider names with missing components (True by default)
+
+## Matcher Methods
 > **similarity**(name_a, name_b, prob=True, surname_first=False)
 * **name_a** *(str)* -- First name for comparison
 * **name_b** *(str)* -- Second name for comparison
@@ -90,8 +98,8 @@ matcher.dedupe(names_list, keep='longest', replace=True)
     * `right`: Use only keys from right frame, similar to a SQL right outer join; preserve key order
     * `outer`: Use union of keys from both frames, similar to a SQL full outer join; sort keys lexicographically
 * **on** *(label or list)* -- Column or index level names to join on. These must be found in both DataFrames
-* **left_on** *(label or list)* -- Column or index level names to join on in the left DataFrame.
-* **right_on** *(label or list)* -- Column or index level names to join on in the right DataFrame.
+* **left_on** *(label or list)* -- Column or index level names to join on in the left DataFrame
+* **right_on** *(label or list)* -- Column or index level names to join on in the right DataFrame
 * **indicator** *(bool)* -- If True, adds a column to output DataFrame called “_merge” with information on the source of each row (False by default)
 * **limit** *(int)* -- Top number of name matches to consider (1 by default)     
 * **threshold** *(float)* -- Prediction probability threshold for positive match (0.5 by default)       

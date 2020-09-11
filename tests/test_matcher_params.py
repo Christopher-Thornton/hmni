@@ -29,7 +29,7 @@ test_cases = {
 
 matcher = hmni.Matcher(model='latin', prefilter=False, allow_alt_surname=True,
                        allow_initials=True, allow_missing_components=True)
-print('\n0. similarity scores')
+print('0. similarity scores')
 for k, v in test_cases.items():
     print(k, matcher.similarity(*v))
 

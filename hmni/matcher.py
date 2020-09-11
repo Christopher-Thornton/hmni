@@ -137,22 +137,6 @@ class Matcher:
             tar.close()
         return model_dir
 
-    def add_sim(self, name_a, name_b, sim, surname_first=False):
-        # preprocess names
-        name_a = self.preprocess(name_a)
-        name_b = self.preprocess(name_b)
-
-        if surname_first:
-            fname_a, lname_a, fname_b, lname_b = name_a[-1], name_a[0], name_b[-1], name_b[0]
-        else:
-            fname_a, lname_a, fname_b, lname_b = name_a[0], name_a[-1], name_b[0], name_b[-1]
-
-        # sort pair to normalize
-        pair = tuple(sorted((fname_a, fname_b), key=lambda item: (-len(item), item)))
-
-        # add pair score to the seen dictionary
-        self.seen_pairs[hash(pair)] = sim
-
     def similarity(self, name_a, name_b, prob=True, threshold=0.5, surname_first=False):
         # input validation
         if not (isinstance(name_a, str) and isinstance(name_b, str)):

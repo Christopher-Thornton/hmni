@@ -68,7 +68,17 @@ class Matcher:
         self.allow_missing_components = allow_missing_components
         self.prefilter = prefilter
         if self.prefilter:
-            self.chars = re.compile('[bcdfghjklmnpqrstvwxz]')
+            self.refined_soundex = {
+                'b': 1, 'p': 1,
+                'f': 2, 'v': 2,
+                'c': 3, 'k': 3, 's': 3,
+                'g': 4, 'j': 4,
+                'q': 5, 'x': 5, 'z': 5,
+                'd': 6, 't': 6,
+                'l': 7,
+                'm': 8, 'n': 8,
+                'r': 9
+            }
 
         # verify user-supplied class arguments
         model_dir = self.validate_parameters()
@@ -137,7 +147,7 @@ class Matcher:
             tar.close()
         return model_dir
 
-    def return_sim(self, sim, prob, threshold):
+    def output_sim(self, sim, prob, threshold):
         if prob:
             return sim
         return 1 if sim >= threshold else 0
@@ -194,32 +204,34 @@ class Matcher:
                     if not missing_component:
                         return 0
                 elif missing_component:
-                    return self.return_sim(0.5, prob=prob, threshold=threshold)
+                    return self.output_sim(0.5, prob=prob, threshold=threshold)
             elif lname_a != lname_b and not missing_component:
                 return 0
             elif missing_component:
-                return self.return_sim(0.5, prob=prob, threshold=threshold)
+                return self.output_sim(0.5, prob=prob, threshold=threshold)
 
         # check initial match in firstname
         if len(fname_a) == 1 or len(fname_b) == 1:
             if fname_a[0] == fname_b[0]:
-                return self.return_sim(0.5, prob=prob, threshold=threshold)
+                return self.output_sim(0.5, prob=prob, threshold=threshold)
             return 0
 
         # check if firstname is same
         if fname_a == fname_b:
             if not missing_component and not initial_lname:
                 return 1
-            return self.return_sim(0.5, prob=prob, threshold=threshold)
+            return self.output_sim(0.5, prob=prob, threshold=threshold)
 
         # sort pair to normalize
         pair = tuple(sorted((fname_a, fname_b), key=lambda item: (-len(item), item)))
 
+        # # prefilter candidates using heuristics on firstname
         if self.prefilter and not missing_component and pair[0][0] != pair[1][0]:
-            # prefilter candidates using heuristics on firstname
-            cons = set(self.chars.findall(pair[1]))
-            # filter if no matching consonant
-            if len(cons) > 0 and not any(c in cons for c in set(self.chars.findall(pair[0]))):
+            encoded1 = set(self.refined_soundex.get(c) for c in set(pair[0][1:]))
+            encoded2 = set(self.refined_soundex.get(c) for c in set(pair[1][1:]))
+            encoded1.discard(None)
+            encoded2.discard(None)
+            if encoded1.isdisjoint(encoded2):
                 return 0
 
         # return pair score if seen
@@ -227,7 +239,7 @@ class Matcher:
         if seen is not None:
             if initial_lname:
                 seen = min(0.5, seen)
-            return self.return_sim(seen, prob=prob, threshold=threshold)
+            return self.output_sim(seen, prob=prob, threshold=threshold)
 
         # generate features for base-level model
         features = self.featurize(pair)
@@ -241,11 +253,16 @@ class Matcher:
         if initial_lname:
             sim = min(0.5, sim)
 
-        return self.return_sim(sim, prob=prob, threshold=threshold)
+        return self.output_sim(sim, prob=prob, threshold=threshold)
 
     def fuzzymerge(self, df1, df2, how='inner', on=None, left_on=None, right_on=None, indicator=False,
                    limit=1, threshold=0.5, allow_exact_matches=True, surname_first=False):
-        # TODO parameter validation
+        # parameter validation
+        if not isinstance(df1, pd.DataFrame):
+            df1 = pd.DataFrame(df1)
+        if not isinstance(df2, pd.DataFrame):
+            df2 = pd.DataFrame(df2)
+
         if not (0 < threshold < 1):
             raise ValueError('threshold must be decimal number between 0 and 1 (given = {})'.format(threshold))
         if how.lower() == 'right':

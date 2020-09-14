@@ -136,6 +136,8 @@ class Matcher:
         self.seen_names = {}
         # seen pairs (mapping dict from name pair tuple to similarity)
         self.seen_pairs = {}
+        # user scores (mapping dict from name pair tuple to similarity)
+        self.user_scores = {}
 
     def validate_parameters(self):
         # extract model tarball into directory if doesnt exist
@@ -152,10 +154,27 @@ class Matcher:
             return sim
         return 1 if sim >= threshold else 0
 
+    def add_sim(self, name_a, name_b, score):
+        if not (isinstance(name_a, str) and isinstance(name_b, str)):
+            raise TypeError('Only strings are supported in add_score method')
+        if score < 0 or score > 1:
+            raise ValueError('Score must be a number between 0 and 1 (inclusive)')
+        pair = tuple(sorted((name_a.lower().strip(), name_b.lower().strip()),
+                            key=lambda item: (-len(item), item)))
+        self.user_scores[hash(pair)] = score
+
     def similarity(self, name_a, name_b, prob=True, threshold=0.5, surname_first=False):
         # input validation
         if not (isinstance(name_a, str) and isinstance(name_b, str)):
             raise TypeError('Only string comparison is supported in similarity method')
+
+        if len(self.user_scores) != 0:
+            # return user score if match
+            pair = tuple(sorted((name_a.lower().strip(), name_b.lower().strip()),
+                                key=lambda item: (-len(item), item)))
+            score = self.seen_set(pair, self.user_scores)
+            if score is not None:
+                return self.output_sim(score, prob=prob, threshold=threshold)
 
         # empty or single character string returns 0
         if len(name_a) < 2 or len(name_b) < 2:
@@ -225,7 +244,7 @@ class Matcher:
         # sort pair to normalize
         pair = tuple(sorted((fname_a, fname_b), key=lambda item: (-len(item), item)))
 
-        # # prefilter candidates using heuristics on firstname
+        # prefilter candidates using heuristics on firstname
         if self.prefilter and not missing_component and pair[0][0] != pair[1][0]:
             encoded1 = set(self.refined_soundex.get(c) for c in set(pair[0][1:]))
             encoded2 = set(self.refined_soundex.get(c) for c in set(pair[1][1:]))

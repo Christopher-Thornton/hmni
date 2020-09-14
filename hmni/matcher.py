@@ -154,7 +154,7 @@ class Matcher:
             return sim
         return 1 if sim >= threshold else 0
 
-    def add_sim(self, name_a, name_b, score):
+    def assign_similarity(self, name_a, name_b, score):
         if not (isinstance(name_a, str) and isinstance(name_b, str)):
             raise TypeError('Only strings are supported in add_score method')
         if score < 0 or score > 1:

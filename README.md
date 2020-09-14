@@ -117,6 +117,11 @@ matcher.dedupe(names_list, keep='longest', replace=True)
 * **replace** *(bool)* -- If True return normalized name list, else return deduplicated name list (False by default) 
 * **surname_first** *(bool)* -- If name strings start with surname (False by default)
 
+> **assign_similarity**(name_a, name_b, score)
+* **name_a** *(str)* -- First name for similarity score assignment
+* **name_b** *(str)* -- Second name for similarity score assignment
+* **score** *(float)* -- Assigned similarity score for pair of names
+
 ## Contributing
 Pull requests are welcome. 
 For developers wishing to build a model using Latin or non-Latin writing systems (Chinese, Cyrillic, Arabic), 

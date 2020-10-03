@@ -33,7 +33,7 @@ install_requires = [
     'pandas >= 0.25',
     'numpy',
     'unidecode',
-    'fuzzywuzzy',
+    'rapidfuzz',
     'abydos == 0.5.0',
     'scikit-learn',
     'joblib'

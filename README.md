@@ -25,7 +25,7 @@ For an introduction to the methodology and research behind HMNI, please refer to
 ### Python 3.5–3.8
 -  tensorflow
 -  scikit-learn
--  fuzzywuzzy
+-  rapidfuzz
 -  abydos
 -  unidecode
 

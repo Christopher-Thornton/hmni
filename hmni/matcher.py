@@ -304,7 +304,7 @@ class Matcher:
             lambda x: self.get_top_matches(x, df2[k2], limit=limit, thresh=threshold,
                                            exact=allow_exact_matches, surname_first=surname_first))
         df1 = df1.explode(key)
-        df1[key] = df1.apply(lambda row: row.key[0], axis=1)
+        df1[key] = df1[key].str.get(0)
         df1 = df1.merge(df2, how=how, left_on=key, right_on=right_on, indicator=indicator)
         del df1[key]
         return df1

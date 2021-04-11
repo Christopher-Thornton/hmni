@@ -13,11 +13,7 @@ import numpy as np
 import pandas as pd
 from random import randint
 
-import warnings
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=UserWarning)
-    from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 from collections import Counter
 from hmni import syllable_tokenizer

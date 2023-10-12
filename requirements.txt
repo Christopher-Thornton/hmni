@@ -1,6 +1,6 @@
-tensorflow
+tensorflow<=2.7.4
 pandas>=0.25
-numpy
+numpy==1.19.2
 unidecode
 fuzzywuzzy
 abydos==0.5.0

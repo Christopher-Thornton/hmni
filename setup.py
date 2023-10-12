@@ -29,13 +29,13 @@ setup_args = dict(
 )
 
 install_requires = [
-    'tensorflow',
+    'tensorflow <= 2.7.4',
     'pandas >= 0.25',
-    'numpy',
+    'numpy == 1.19.1',
     'unidecode',
     'fuzzywuzzy',
     'abydos == 0.5.0',
-    'scikit-learn',
+    'scikit-learn == 0.23.1',
     'joblib'
 ]
 

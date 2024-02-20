@@ -35,6 +35,16 @@ Using PIP via PyPI
 ```bash
 pip install hmni
 ```
+#### Fix deprecated imports from numpy and collections
+In order to resolve import errors from `numpy` and `collections` when importing `hmni`, import `hmni` as follows:
+```python
+import numpy
+numpy.float = float
+numpy.int = int
+import collections
+collections.Iterable = collections.abc.Iterable
+import hmni
+```
 #### Initialize a Matcher Object
 ```python
 import hmni
